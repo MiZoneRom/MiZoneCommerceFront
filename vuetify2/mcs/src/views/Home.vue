@@ -15,7 +15,7 @@
             </v-list-item-content>
           </template>
 
-          <v-list-item v-for="child in item.children" :key="child.name" link>
+          <v-list-item v-for="child in item.children" :key="child.name" @click="$router.push(child.path)" link>
             <v-list-item-title v-text="child.name"></v-list-item-title>
             <v-list-item-icon>
               <v-icon v-text="child.iconCls"></v-icon>
