@@ -2,6 +2,16 @@
 
 import Vue from 'vue';
 import axios from "axios";
+import apiPath from "@/service/apiPath";
+import router from '../router'
+
+//刷新token
+export function getRefreshToken(param) {
+  return axios.post(apiPath.REFRESH_TOKEN, param)
+    .then((res) => {
+      return Promise.resolve(res.data)
+    })
+}
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -9,37 +19,125 @@ import axios from "axios";
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 let config = {
+  baseURL: process.env.VUE_APP_BASE_API,
+  timeout: 5 * 1000
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
 };
 
+// 配置通用请求动画
+let isRefreshing = false;
+// 重试队列，每一项将是一个待执行的函数形式
+let requests = [];
+
 const _axios = axios.create(config);
 
 _axios.interceptors.request.use(
-  function(config) {
-    // Do something before request is sent
+  function (config) {
+    var token = sessionStorage.getItem('token');
+    if (token != 'undefined' && token) {
+      config.headers.Authorization = 'Bearer ' + JSON.parse(token);
+    }
     return config;
   },
-  function(error) {
-    // Do something with request error
+  function (error) {
     return Promise.reject(error);
   }
 );
 
 // Add a response interceptor
-_axios.interceptors.response.use(
-  function(response) {
-    // Do something with response data
+_axios.interceptors.response.use(async (response) => {
+  //请求状态
+  var status = response.status;
+  //如果登录失效
+  if (response.data.code == 2) {
+    router.push({
+      path: "/Login",
+      querry: { redirect: router.currentRoute.fullPath }//从哪个页面跳转
+    })
     return response;
-  },
-  function(error) {
-    // Do something with response error
-    return Promise.reject(error);
   }
+  return response;
+}, async (error) => {
+  if (error.response) {
+
+    var status = error.response.status;
+
+    if (status == 401) {
+
+      //获取Token
+      const token = JSON.parse(sessionStorage.getItem('token'));
+      const expires = parseInt(JSON.parse(sessionStorage.getItem('expires')));
+      const refresh_token = JSON.parse(sessionStorage.getItem('refreshToken'));
+
+      //如果没有正在刷新
+      if (!isRefreshing) {
+
+        //设置为正在刷新
+        isRefreshing = true;
+
+        let refreshData = {
+          token: token,
+          refresh_token: refresh_token
+        };
+
+        //刷新数据
+        var tokenResult = await getRefreshToken(refreshData);
+
+        //如果获取成功
+        if (tokenResult.success) {
+          isRefreshing = false;
+          sessionStorage.setItem("token", JSON.stringify(tokenResult.data.token));
+          sessionStorage.setItem("refreshToken", JSON.stringify(tokenResult.data.refreshToken));
+          sessionStorage.setItem("expires", JSON.stringify(tokenResult.data.expires));
+          sessionStorage.setItem("refreshExpires", JSON.stringify(tokenResult.data.refreshExpires));
+          // 已经刷新了token，将所有队列中的请求进行重试
+          requests.forEach(cb => cb(tokenResult.data.token));
+          requests = [];
+          //重新请求之前的内容
+          error.config.headers.Authorization = 'Bearer ' + tokenResult.data.token;
+          return _axios(error.config);
+        } else {
+          this.$dialog.notify.info(tokenResult.msg, {
+            position: 'top-right',
+            timeout: 5000
+          });
+          //跳转到登录
+          router.replace({
+            path: '/Login',
+            query: {
+              redirect: router.currentRoute.fullPath
+            }
+          });
+        }
+      } else {
+        // 正在刷新token，将返回一个未执行resolve的promise
+        return new Promise((resolve) => {
+          // 将resolve放进队列，用一个函数形式来保存，等token刷新后直接执行
+          requests.push((token) => {
+            error.config.headers.Authorization = 'Bearer ' + token;
+            resolve(_axios(error.config));
+          });
+        });
+      }
+    } else if (status == 403) {
+      router.replace({
+        path: '/Login',
+        query: {
+          redirect: router.currentRoute.fullPath//登录之后跳转到对应页面
+        }
+      });
+      return;
+    }
+  } else {
+    console.error('抱歉，请求处理异常');
+  }
+  return Promise.reject(error);
+}
 );
 
-Plugin.install = function(Vue, options) {
+Plugin.install = function (Vue, options) {
   Vue.axios = _axios;
   window.axios = _axios;
   Object.defineProperties(Vue.prototype, {

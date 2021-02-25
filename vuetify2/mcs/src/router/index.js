@@ -1,14 +1,29 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '@/views/Home.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: '控制台',
+    component: Home,
+    iconCls: 'el-icon-edit',
+    children: [
+      {
+        path: '/',
+        hidden: true,
+        redirect: '/Console',
+      }
+    ]
+  },
+  {
+    path: '/Login',
+    name: 'Login',
+    hidden: true, // 左侧导航栏中隐藏
+    component: () => import('@/views/Login'),
+    iconCls: 'el-icon-message',//图标样式class
   },
   {
     path: '/about',
