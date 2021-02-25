@@ -98,7 +98,7 @@ export default {
             return;
           }
 
-          sessionStorage.setItem("admin", JSON.stringify(vm.form.username));
+          sessionStorage.setItem("admin", JSON.stringify(vm.name));
           sessionStorage.setItem("token", JSON.stringify(data.data.token));
           sessionStorage.setItem(
             "refreshToken",
