@@ -43,7 +43,7 @@
 export default {
   data() {
     return {
-      route: global.antRouter,
+      route: global.RouterList,
     };
   },
   created() {},
