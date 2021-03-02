@@ -3,7 +3,7 @@
 import Vue from 'vue';
 import axios from "axios";
 import apiPath from "@/service/apiPath";
-import router from '../router'
+import router from '@/router'
 
 //刷新token
 export function getRefreshToken(param) {

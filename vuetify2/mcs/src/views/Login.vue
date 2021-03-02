@@ -7,6 +7,7 @@
           :loading="logining"
           outlined
           class="login-card rounded-lg"
+          transition="fade-transition"
         >
           <v-form ref="form" v-model="valid" lazy-validation>
             <div class="pa-0">
@@ -76,10 +77,17 @@
                       required
                     ></v-text-field>
 
-                    <v-btn color="primary" @click="step = 2"> 下一步 </v-btn>
+                    <div class="btn-box">
+                      <v-btn color="primary" @click="nextStep"> 下一步 </v-btn>
+                    </div>
                   </v-stepper-content>
 
                   <v-stepper-content step="2">
+                    <v-card-text class="text-center">
+                      <p class="font-weight-bold text-h5">登录</p>
+                      <p>请输入密码</p>
+                    </v-card-text>
+
                     <v-text-field
                       outlined
                       v-model="password"
@@ -99,7 +107,6 @@
                         登录
                       </v-btn>
                     </div>
-                    
                   </v-stepper-content>
                 </v-stepper-items>
               </v-stepper>
@@ -151,9 +158,13 @@ export default {
         .get(
           apiPath.LOGIN + "?username=" + vm.name + "&password=" + vm.password
         )
-        .then((data) => {
-          if (data.success == false) {
-            this.$dialog.notify.info(data.msg, {
+        .then((response) => {
+          var responseData = response.data;
+
+          console.info(responseData);
+
+          if (responseData.success == false) {
+            this.$dialog.notify.info(responseData.msg, {
               position: "top-right",
               timeout: 5000,
             });
@@ -162,18 +173,27 @@ export default {
           }
 
           sessionStorage.setItem("admin", JSON.stringify(vm.name));
-          sessionStorage.setItem("token", JSON.stringify(data.data.token));
+          sessionStorage.setItem("token", JSON.stringify(responseData.data.token));
           sessionStorage.setItem(
             "refreshToken",
-            JSON.stringify(data.data.refreshToken)
+            JSON.stringify(responseData.data.refreshToken)
           );
-          sessionStorage.setItem("expires", JSON.stringify(data.data.expires));
+          sessionStorage.setItem("expires", JSON.stringify(responseData.data.expires));
           sessionStorage.setItem(
             "refreshExpires",
-            JSON.stringify(data.data.refreshExpires)
+            JSON.stringify(responseData.data.refreshExpires)
           );
           vm.$router.push({ path: "/" });
         });
+    },
+    nextStep() {
+      let that = this;
+      //验证表单
+      that.$refs.form.validate();
+      if (that.name) {
+        that.step = 2;
+        that.$refs.form.resetValidation();
+      }
     },
   },
 };
@@ -199,9 +219,12 @@ export default {
   .btn-box {
     text-align: right;
   }
-  .login-stepper{
+  .login-stepper {
     padding: 0;
     box-shadow: 0 0;
   }
+}
+.theme--light.v-stepper {
+  background: none;
 }
 </style>

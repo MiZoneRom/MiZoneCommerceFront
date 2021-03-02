@@ -8,7 +8,7 @@
         >
           <v-row align="end" class="fill-height">
             <v-col class="pa-5" cols="4">
-              <v-avatar class="profile" color="grey" :size="collapse?64:32">
+              <v-avatar class="profile" color="grey" :size="collapse ? 64 : 32">
                 <v-img
                   src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
                 ></v-img>
@@ -67,18 +67,24 @@
         <router-view></router-view>
       </v-container>
     </v-main>
-
   </v-app>
 </template>
 
 <script>
+import apiPath from "@/service/apiPath";
 export default {
   data() {
     return {
+      managerInfo: null,
       collapse: false,
       route: global.RouterList,
     };
   },
-  created() {},
+  created() {
+    let vm = this;
+    vm.axios.get(apiPath.USER_INFO).then((response) => {
+      vm.managerInfo = response.managerModel;
+    });
+  },
 };
 </script>
