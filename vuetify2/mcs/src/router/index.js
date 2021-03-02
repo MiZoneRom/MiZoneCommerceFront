@@ -7,13 +7,15 @@ const routes = [
   {
     path: '/',
     name: '首页',
-    component: () => import('@/views/Home'),
-    iconCls: 'el-icon-edit',
+    iconCls: 'mdi-clock',
     redirect: '/Console',
+    component: () => import('@/views/Home'),
     children: [
       {
         name: '控制台',
         path: '/Console',
+        iconCls: 'mdi-clock',
+        component: () => import('@/views/Console'),
         hidden: true
       }
     ]
