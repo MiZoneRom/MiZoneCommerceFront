@@ -18,7 +18,7 @@
               <v-list-item color="rgba(0, 0, 0, .4)" dark>
                 <v-list-item-content>
                   <v-list-item-title class="title">
-                    Marcus Obrien
+                    {{managerInfo.realName}}
                   </v-list-item-title>
                   <v-list-item-subtitle>Network Engineer</v-list-item-subtitle>
                 </v-list-item-content>
@@ -83,7 +83,8 @@ export default {
   created() {
     let vm = this;
     vm.axios.get(apiPath.USER_INFO).then((response) => {
-      vm.managerInfo = response.managerModel;
+      console.info( response.data.managerModel);
+      vm.managerInfo = response.data.managerModel;
     });
   },
 };
