@@ -18,7 +18,7 @@
               <v-list-item color="rgba(0, 0, 0, .4)" dark>
                 <v-list-item-content>
                   <v-list-item-title class="title">
-                    {{managerInfo.realName}}
+                    {{ managerInfo.realName }}
                   </v-list-item-title>
                   <v-list-item-subtitle>Network Engineer</v-list-item-subtitle>
                 </v-list-item-content>
@@ -63,9 +63,7 @@
     </v-app-bar>
 
     <v-main>
-      <v-container fluid>
-        <router-view></router-view>
-      </v-container>
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
@@ -83,7 +81,7 @@ export default {
   created() {
     let vm = this;
     vm.axios.get(apiPath.USER_INFO).then((response) => {
-      console.info( response.data.managerModel);
+      console.info(response.data.managerModel);
       vm.managerInfo = response.data.managerModel;
     });
   },
