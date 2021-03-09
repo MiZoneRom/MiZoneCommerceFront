@@ -5,12 +5,12 @@ import vuetify from './plugins/vuetify';
 import router from './router'
 
 import VuetifyDialog from 'vuetify-dialog'
-import 'vuetify-dialog/dist/vuetify-dialog.css' 
+import 'vuetify-dialog/dist/vuetify-dialog.css'
 
 Vue.use(VuetifyDialog, {
-  context: {
-  vuetify
-  }
+	context: {
+		vuetify
+	}
 })
 
 import 'babel-polyfill'
@@ -45,7 +45,7 @@ router.beforeEach(async (to, from, next) => {
 	}
 
 	//获取系统路由
-	if (!siteRouter) {
+	if (!siteRouter && user) {
 		//从后台获取路由
 		var remoteRouter = await Vue.axios.get(apiPath.NAVIGATION);
 		var siteRouterData = remoteRouter.data.data;
@@ -108,7 +108,7 @@ function filterAsyncRouter(asyncRouterMap) {
 }
 
 new Vue({
-  vuetify,
-  router,
-  render: h => h(App)
+	vuetify,
+	router,
+	render: h => h(App)
 }).$mount('#app')
