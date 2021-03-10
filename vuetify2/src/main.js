@@ -18,6 +18,7 @@ import 'babel-polyfill'
 import apiPath from "@/service/apiPath";
 
 import Home from '@/views/Home'
+import store from './store'
 
 const _import = require('./router/_import_' + process.env.NODE_ENV)
 
@@ -108,7 +109,8 @@ function filterAsyncRouter(asyncRouterMap) {
 }
 
 new Vue({
-	vuetify,
-	router,
-	render: h => h(App)
+    vuetify,
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app')

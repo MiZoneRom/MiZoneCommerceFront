@@ -33,7 +33,7 @@
           v-for="item in route"
           :key="item.groupId"
           v-model="item.active"
-          :prepend-icon="item.iconCls"
+          :prepend-icon="item.icon"
           no-action
         >
           <template v-slot:activator>
@@ -50,7 +50,7 @@
           >
             <v-list-item-title v-text="child.name"></v-list-item-title>
             <v-list-item-icon>
-              <v-icon v-text="child.iconCls"></v-icon>
+              <v-icon>{{child.icon}}</v-icon>
             </v-list-item-icon>
           </v-list-item>
         </v-list-group>
@@ -81,7 +81,6 @@ export default {
   created() {
     let vm = this;
     vm.axios.get(apiPath.USER_INFO).then((response) => {
-      console.info(response.data.managerModel);
       vm.managerInfo = response.data.managerModel;
     });
   },
