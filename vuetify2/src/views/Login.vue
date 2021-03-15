@@ -119,8 +119,6 @@
 </template>
 
 <script>
-import apiPath from "@/service/apiPath";
-
 export default {
   data() {
     return {
@@ -152,39 +150,7 @@ export default {
       //如果没有验证通过
       if (!validateResult) return;
 
-      vm.logining = true;
-
-      vm.axios
-        .get(
-          apiPath.LOGIN + "?username=" + vm.name + "&password=" + vm.password
-        )
-        .then((response) => {
-          var responseData = response.data;
-
-          console.info(responseData);
-
-          if (responseData.success == false) {
-            this.$dialog.notify.info(responseData.msg, {
-              position: "top-right",
-              timeout: 5000,
-            });
-            vm.logining = false;
-            return;
-          }
-
-          sessionStorage.setItem("admin", JSON.stringify(vm.name));
-          sessionStorage.setItem("token", JSON.stringify(responseData.data.token));
-          sessionStorage.setItem(
-            "refreshToken",
-            JSON.stringify(responseData.data.refreshToken)
-          );
-          sessionStorage.setItem("expires", JSON.stringify(responseData.data.expires));
-          sessionStorage.setItem(
-            "refreshExpires",
-            JSON.stringify(responseData.data.refreshExpires)
-          );
-          vm.$router.push({ path: "/" });
-        });
+      vm.$store.dispatch("Login", vm);
     },
     nextStep() {
       let that = this;

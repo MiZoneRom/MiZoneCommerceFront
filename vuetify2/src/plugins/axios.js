@@ -4,9 +4,10 @@ import Vue from 'vue';
 import axios from "axios";
 import apiPath from "@/service/apiPath";
 import router from '@/router'
+import { getToken, getRefreshToken,setToken,setRefreshToken } from '@/utils/auth'
 
 //刷新token
-export function getRefreshToken(param) {
+export function getRefreshTokenAsync(param) {
   return axios.post(apiPath.REFRESH_TOKEN, param)
     .then((res) => {
       return Promise.resolve(res.data)
@@ -19,8 +20,8 @@ export function getRefreshToken(param) {
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 let config = {
-  baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 5 * 1000
+  baseURL: process.env.VUE_APP_SERVICE_URL,
+  timeout: 15 * 1000
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
@@ -35,7 +36,7 @@ const _axios = axios.create(config);
 
 _axios.interceptors.request.use(
   function (config) {
-    var token = sessionStorage.getItem('token');
+    var token = getToken();
     if (token != 'undefined' && token) {
       config.headers.Authorization = 'Bearer ' + JSON.parse(token);
     }
@@ -67,9 +68,9 @@ _axios.interceptors.response.use(async (response) => {
     if (status == 401) {
 
       //获取Token
-      const token = JSON.parse(sessionStorage.getItem('token'));
-      const expires = parseInt(JSON.parse(sessionStorage.getItem('expires')));
-      const refresh_token = JSON.parse(sessionStorage.getItem('refreshToken'));
+      const token = getToken();
+      //const expires = parseInt(JSON.parse(sessionStorage.getItem('expires')));
+      const refresh_token = getRefreshToken();
 
       //如果没有正在刷新
       if (!isRefreshing) {
@@ -83,15 +84,15 @@ _axios.interceptors.response.use(async (response) => {
         };
 
         //刷新数据
-        var tokenResult = await getRefreshToken(refreshData);
+        var tokenResult = await getRefreshTokenAsync(refreshData);
 
         //如果获取成功
         if (tokenResult.success) {
           isRefreshing = false;
-          sessionStorage.setItem("token", JSON.stringify(tokenResult.data.token));
-          sessionStorage.setItem("refreshToken", JSON.stringify(tokenResult.data.refreshToken));
-          sessionStorage.setItem("expires", JSON.stringify(tokenResult.data.expires));
-          sessionStorage.setItem("refreshExpires", JSON.stringify(tokenResult.data.refreshExpires));
+          setToken(JSON.stringify(tokenResult.data.token));
+          setRefreshToken(JSON.stringify(tokenResult.data.refreshToken));
+          //sessionStorage.setItem("expires", JSON.stringify(tokenResult.data.expires));
+          //sessionStorage.setItem("refreshExpires", JSON.stringify(tokenResult.data.refreshExpires));
           // 已经刷新了token，将所有队列中的请求进行重试
           requests.forEach(cb => cb(tokenResult.data.token));
           requests = [];
