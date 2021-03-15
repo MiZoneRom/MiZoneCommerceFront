@@ -30,4 +30,5 @@ export function setAdmin(admin) {
 export function removeToken() {
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(ADMIN_KEY)
+    localStorage.removeItem(REFRESH_TOKEN_KEY)
 }
