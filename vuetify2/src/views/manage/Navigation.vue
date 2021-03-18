@@ -83,15 +83,21 @@
             ></v-text-field>
 
             <v-textarea label="简介" v-model="selectedNav.remark"></v-textarea>
-
-            <v-btn
-              :disabled="!valid"
-              color="success"
-              class="mr-4"
-              @click="submitNav"
-            >
-              保存
-            </v-btn>
+            <v-fab-transition>
+              <v-btn
+                v-show="valid"
+                :disabled="!valid"
+                color="pink"
+                dark
+                absolute
+                bottom
+                right
+                fab
+                @click="submitNav"
+              >
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
+            </v-fab-transition>
           </v-form>
         </v-card>
       </v-scroll-x-transition>
