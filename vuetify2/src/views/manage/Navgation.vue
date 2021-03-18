@@ -1,7 +1,7 @@
 <template>
   <v-card class="ma-4">
     <v-row class="pa-4" justify="space-between">
-      <v-col cols="2">
+      <v-col cols="4">
         <v-treeview
           :active.sync="active"
           :items="navs"
