@@ -32,7 +32,7 @@ router.beforeEach(async (to, from, next) => {
   //获取系统路由
   if (!siteRouter && user) {
     //从后台获取路由
-    var remoteRouter = await Vue.axios.get(apiPath.NAVIGATION);
+    var remoteRouter = await Vue.axios.get(apiPath.NAVIGATION_TREELIST);
     var siteRouterData = remoteRouter.data.data;
     //执行路由跳转方法
     initRouter(siteRouterData, to, next);

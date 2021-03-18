@@ -113,7 +113,7 @@ _axios.interceptors.response.use(async (response) => {
           });
         }
       } else {
-        // 正在刷新token，将返回一个未执行resolve的promise
+        // 如果正在刷新token，将返回一个未执行resolve的promise
         return new Promise((resolve) => {
           // 将resolve放进队列，用一个函数形式来保存，等token刷新后直接执行
           requests.push((token) => {
