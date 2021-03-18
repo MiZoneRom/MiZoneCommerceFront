@@ -4,6 +4,7 @@ import App from '@/App.vue';
 import vuetify from '@/plugins/vuetify';
 import store from '@/store';
 import router from '@/router';
+import './plugins/remoteRouter';
 
 import VuetifyDialog from 'vuetify-dialog';
 import 'vuetify-dialog/dist/vuetify-dialog.css';
@@ -13,8 +14,6 @@ Vue.use(VuetifyDialog, {
 })
 
 import 'babel-polyfill';
-
-import remoteRouter from './plugins/remoteRouter';
 
 Vue.config.productionTip = false
 

@@ -4,11 +4,11 @@ import Vue from 'vue';
 import axios from "axios";
 import apiPath from "@/service/apiPath";
 import router from '@/router'
-import { getToken, getRefreshToken,setToken,setRefreshToken } from '@/utils/auth'
+import { getToken, getRefreshToken, setToken, setRefreshToken } from '@/utils/auth'
 
 //刷新token
 export function getRefreshTokenAsync(param) {
-  return axios.post(apiPath.REFRESH_TOKEN, param)
+  return axios.post(process.env.VUE_APP_SERVICE_URL + apiPath.REFRESH_TOKEN, param)
     .then((res) => {
       return Promise.resolve(res.data)
     })
@@ -38,7 +38,7 @@ _axios.interceptors.request.use(
   function (config) {
     var token = getToken();
     if (token != 'undefined' && token) {
-      config.headers.Authorization = 'Bearer ' + JSON.parse(token);
+      config.headers.Authorization = 'Bearer ' + token;
     }
     return config;
   },
@@ -80,7 +80,7 @@ _axios.interceptors.response.use(async (response) => {
 
         let refreshData = {
           token: token,
-          refresh_token: refresh_token
+          refreshToken: refresh_token
         };
 
         //刷新数据

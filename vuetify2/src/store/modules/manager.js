@@ -43,9 +43,9 @@ const manager = {
                         vm.logining = false;
                         return;
                     }
-                    commit('SET_ADMIN', JSON.stringify(vm.name));
-                    commit('SET_TOKEN', JSON.stringify(responseData.data.token));
-                    commit('SET_REFRESH_TOKEN', JSON.stringify(responseData.data.refreshToken));
+                    commit('SET_ADMIN', vm.name);
+                    commit('SET_TOKEN', responseData.data.token);
+                    commit('SET_REFRESH_TOKEN', responseData.data.refreshToken);
 
                     vm.$router.push('/');
                 });

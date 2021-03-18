@@ -65,11 +65,9 @@ function initRouter(data, to, next) {
 function filterAsyncRouter(asyncRouterMap) {
   const accessedRouters = asyncRouterMap.filter(route => {
     if (route.component) {
-      if (route.component === 'Layout') {//Layout组件特殊处理
-        route.component = Home;
-      } else {
-        route.component = _import(route.component);
-      }
+      route.component = _import(route.component);
+    } else {
+      route.component = Home;
     }
     if (route.children && route.children.length) {
       route.children = filterAsyncRouter(route.children);

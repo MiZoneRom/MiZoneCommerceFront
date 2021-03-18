@@ -20,7 +20,7 @@ export function setRefreshToken(token) {
 }
 // 获取用户信息
 export function getAdmin() {
-    return JSON.parse(localStorage.getItem(ADMIN_KEY))
+    return localStorage.getItem(ADMIN_KEY)
 }
 //保存用户信息
 export function setAdmin(admin) {

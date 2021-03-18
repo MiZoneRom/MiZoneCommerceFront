@@ -1,7 +1,11 @@
 <template>
   <v-app>
-    <v-navigation-drawer app :expand-on-hover="!collapse">
-      <v-card class="mx-auto" tile>
+    <v-navigation-drawer
+      app
+      :expand-on-hover="!collapse"
+      permanent
+    >
+      <v-card class="mx-auto" tile v-if="collapse">
         <v-img
           height="100%"
           src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
@@ -14,7 +18,7 @@
                 ></v-img>
               </v-avatar>
             </v-col>
-            <v-col class="py-0" cols="8" v-if="collapse">
+            <v-col class="py-0" cols="8">
               <v-list-item color="rgba(0, 0, 0, .4)" dark>
                 <v-list-item-content>
                   <v-list-item-title class="title">
@@ -50,7 +54,7 @@
           >
             <v-list-item-title v-text="child.name"></v-list-item-title>
             <v-list-item-icon>
-              <v-icon>{{child.icon}}</v-icon>
+              <v-icon>{{ child.icon }}</v-icon>
             </v-list-item-icon>
           </v-list-item>
         </v-list-group>
