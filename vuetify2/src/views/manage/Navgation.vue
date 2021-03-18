@@ -1,8 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="indigo white--text headline">
-      User Directory
-    </v-card-title>
+  <v-card class="ma-4">
+    <v-card-title class="indigo white--text headline"> 编辑导航 </v-card-title>
     <v-row class="pa-4" justify="space-between">
       <v-col cols="5">
         <v-treeview
@@ -11,12 +9,11 @@
           :load-children="fetchUsers"
           :open.sync="open"
           activatable
-          color="warning"
-          open-on-click
+          
           transition
         >
           <template v-slot:prepend="{ item }">
-            <v-icon v-if="!item.children"> mdi-account </v-icon>
+            <v-icon v-if="!item.children">{{ item.icon }}</v-icon>
           </template>
         </v-treeview>
       </v-col>
@@ -30,7 +27,7 @@
             class="title grey--text text--lighten-1 font-weight-light"
             style="align-self: center"
           >
-            Select a User
+            选择一个导航
           </div>
           <v-card
             v-else
@@ -82,15 +79,7 @@
   </v-card>
 </template>
 <script>
-import Vue from "vue";
 import apiPath from "@/service/apiPath";
-const avatars = [
-  "?accessoriesType=Blank&avatarStyle=Circle&clotheColor=PastelGreen&clotheType=ShirtScoopNeck&eyeType=Wink&eyebrowType=UnibrowNatural&facialHairColor=Black&facialHairType=MoustacheMagnum&hairColor=Platinum&mouthType=Concerned&skinColor=Tanned&topType=Turban",
-  "?accessoriesType=Sunglasses&avatarStyle=Circle&clotheColor=Gray02&clotheType=ShirtScoopNeck&eyeType=EyeRoll&eyebrowType=RaisedExcited&facialHairColor=Red&facialHairType=BeardMagestic&hairColor=Red&hatColor=White&mouthType=Twinkle&skinColor=DarkBrown&topType=LongHairBun",
-  "?accessoriesType=Prescription02&avatarStyle=Circle&clotheColor=Black&clotheType=ShirtVNeck&eyeType=Surprised&eyebrowType=Angry&facialHairColor=Blonde&facialHairType=Blank&hairColor=Blonde&hatColor=PastelOrange&mouthType=Smile&skinColor=Black&topType=LongHairNotTooLong",
-  "?accessoriesType=Round&avatarStyle=Circle&clotheColor=PastelOrange&clotheType=Overall&eyeType=Close&eyebrowType=AngryNatural&facialHairColor=Blonde&facialHairType=Blank&graphicType=Pizza&hairColor=Black&hatColor=PastelBlue&mouthType=Serious&skinColor=Light&topType=LongHairBigHair",
-  "?accessoriesType=Kurt&avatarStyle=Circle&clotheColor=Gray01&clotheType=BlazerShirt&eyeType=Surprised&eyebrowType=Default&facialHairColor=Red&facialHairType=Blank&graphicType=Selena&hairColor=Red&hatColor=Blue02&mouthType=Twinkle&skinColor=Pale&topType=LongHairCurly",
-];
 
 export default {
   data: () => ({
@@ -98,10 +87,10 @@ export default {
     avatar: null,
     open: [],
     navs: [],
-    selectedNav: undefined,
+    selectedNav: null,
   }),
   async created() {
-    var navData = await Vue.axios.get(apiPath.NAVIGATION_TREELIST);
+    var navData = await this.axios.get(apiPath.NAVIGATION_TREELIST);
     var navList = navData.data.data;
     this.filterTreeList(navList);
     this.navs = navList;
@@ -115,6 +104,11 @@ export default {
   },
   watch: {
     selected: "randomAvatar",
+    open: {
+      deep: true,
+      async handler() {
+      },
+    },
     active: {
       deep: true,
       async handler() {
@@ -144,7 +138,7 @@ export default {
       });
     },
     async getNavData(id) {
-      var navData = await Vue.axios.get(apiPath.NAVIGATION + "?id=" + id);
+      var navData = await this.axios.get(apiPath.NAVIGATION + "?id=" + id);
       return navData.data.data;
     },
   },
