@@ -1,10 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      app
-      :expand-on-hover="!collapse"
-      permanent
-    >
+    <v-navigation-drawer app :expand-on-hover="!collapse" permanent>
       <v-card class="mx-auto" tile v-if="collapse">
         <v-img
           height="100%"
@@ -24,7 +20,7 @@
                   <v-list-item-title class="title">
                     {{ managerInfo.realName }}
                   </v-list-item-title>
-                  <v-list-item-subtitle>Network Engineer</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{managerInfo.userName}}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -38,7 +34,6 @@
           :key="item.groupId"
           v-model="item.active"
           :prepend-icon="item.icon"
-          no-action
         >
           <template v-slot:activator>
             <v-list-item-content>
@@ -52,10 +47,12 @@
             :to="child.path"
             link
           >
-            <v-list-item-title v-text="child.name"></v-list-item-title>
             <v-list-item-icon>
               <v-icon>{{ child.icon }}</v-icon>
             </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="child.name"></v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
         </v-list-group>
       </v-list>
@@ -78,7 +75,7 @@ export default {
   data() {
     return {
       managerInfo: null,
-      collapse: false,
+      collapse: true,
       route: global.RouterList,
     };
   },

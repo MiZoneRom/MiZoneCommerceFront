@@ -1,19 +1,18 @@
 <template>
   <v-card class="ma-4">
-    <v-card-title class="indigo white--text headline"> 编辑导航 </v-card-title>
     <v-row class="pa-4" justify="space-between">
-      <v-col cols="5">
+      <v-col cols="2">
         <v-treeview
           :active.sync="active"
           :items="navs"
-          :load-children="fetchUsers"
+          :load-children="fetchNavs"
           :open.sync="open"
           activatable
-          
           transition
         >
           <template v-slot:prepend="{ item }">
-            <v-icon v-if="!item.children">{{ item.icon }}</v-icon>
+            <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+            <v-icon v-if="!item.icon">mdi-folder-network</v-icon>
           </template>
         </v-treeview>
       </v-col>
@@ -29,53 +28,66 @@
           >
             选择一个导航
           </div>
-          <v-card
-            v-else
-            :key="selectedNav.id"
-            class="pt-6 mx-auto"
-            flat
-            max-width="400"
-          >
-            <v-card-text>
-              <v-avatar v-if="avatar" size="88">
-                <v-img
-                  :src="`https://avataaars.io/${avatar}`"
-                  class="mb-6"
-                ></v-img>
-              </v-avatar>
-              <h3 class="headline mb-2">
-                {{ selectedNav.name }}
-              </h3>
-              <div class="blue--text mb-2">
-                {{ selectedNav.name }}
-              </div>
-              <div class="blue--text subheading font-weight-bold">
-                {{ selectedNav.name }}
-              </div>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-row class="text-left" tag="v-card-text">
-              <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
-                Company:
-              </v-col>
-              <v-col>{{ selectedNav.name }}</v-col>
-              <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
-                Website:
-              </v-col>
-              <v-col>
-                <a :href="`//${selectedNav.name}`" target="_blank">{{
-                  selectedNav.website
-                }}</a>
-              </v-col>
-              <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
-                Phone:
-              </v-col>
-              <v-col>{{ selectedNav.phone }}</v-col>
-            </v-row>
+          <v-card v-else :key="selectedNav.id" class="mx-auto" flat>
+            <v-form ref="form" v-model="valid" lazy-validation>
+              <v-text-field
+                v-model="selectedNav.name"
+                :counter="10"
+                :rules="nameRules"
+                label="名称"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="selectedNav.subTitle"
+                :rules="nameRules"
+                label="副标题"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="selectedNav.icon"
+                label="图标"
+              ></v-text-field>
+
+              <v-text-field
+                v-model="selectedNav.component"
+                label="组件"
+              ></v-text-field>
+
+              <v-text-field
+                v-model="selectedNav.path"
+                label="地址"
+              ></v-text-field>
+
+              <v-text-field
+                v-model="selectedNav.sortId"
+                label="排序"
+                required
+                type="number"
+              ></v-text-field>
+
+              <v-textarea label="简介" v-model="selectedNav.desc"></v-textarea>
+
+              <v-btn
+                :disabled="!valid"
+                color="success"
+                class="mr-4"
+                @click="submitNav"
+              >
+                保存
+              </v-btn>
+            </v-form>
           </v-card>
         </v-scroll-y-transition>
       </v-col>
     </v-row>
+
+    <v-fab-transition>
+      <v-btn v-show="!edit" color="pink" dark absolute bottom right fab>
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-fab-transition>
   </v-card>
 </template>
 <script>
@@ -83,11 +95,16 @@ import apiPath from "@/service/apiPath";
 
 export default {
   data: () => ({
+    valid: true,
     active: [],
-    avatar: null,
     open: [],
     navs: [],
     selectedNav: null,
+    edit: false,
+    nameRules: [
+      (v) => !!v || "Name is required",
+      (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+    ],
   }),
   async created() {
     var navData = await this.axios.get(apiPath.NAVIGATION_TREELIST);
@@ -103,29 +120,23 @@ export default {
     },
   },
   watch: {
-    selected: "randomAvatar",
     open: {
       deep: true,
-      async handler() {
-      },
+      async handler() {},
     },
     active: {
       deep: true,
       async handler() {
+        if (this.active.length <= 0) return;
         var navData = await this.getNavData(this.active[0]);
-        console.info(navData);
         this.selectedNav = navData;
       },
     },
   },
   methods: {
-    async fetchUsers(item) {
+    async fetchNavs(item) {
       this.$delete(item, "children");
       item.children.push(item);
-    },
-    //随机头像
-    randomAvatar() {
-      console.info("aaa");
     },
     //处理导航列表
     filterTreeList(item) {
@@ -140,6 +151,9 @@ export default {
     async getNavData(id) {
       var navData = await this.axios.get(apiPath.NAVIGATION + "?id=" + id);
       return navData.data.data;
+    },
+    submitNav() {
+      this.$refs.form.validate();
     },
   },
 };
