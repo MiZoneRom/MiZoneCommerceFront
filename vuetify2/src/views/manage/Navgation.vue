@@ -7,7 +7,7 @@
       <v-col cols="5">
         <v-treeview
           :active.sync="active"
-          :items="items"
+          :items="navs"
           :load-children="fetchUsers"
           :open.sync="open"
           activatable
@@ -50,10 +50,10 @@
                 {{ selected.name }}
               </h3>
               <div class="blue--text mb-2">
-                {{ selected.email }}
+                {{ selected.name }}
               </div>
               <div class="blue--text subheading font-weight-bold">
-                {{ selected.username }}
+                {{ selected.name }}
               </div>
             </v-card-text>
             <v-divider></v-divider>
@@ -61,12 +61,12 @@
               <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
                 Company:
               </v-col>
-              <v-col>{{ selected.company.name }}</v-col>
+              <v-col>{{ selected.name }}</v-col>
               <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
                 Website:
               </v-col>
               <v-col>
-                <a :href="`//${selected.website}`" target="_blank">{{
+                <a :href="`//${selected.name}`" target="_blank">{{
                   selected.website
                 }}</a>
               </v-col>
@@ -98,8 +98,14 @@ export default {
     avatar: null,
     open: [],
     users: [],
+    navs: [],
   }),
-
+  async created() {
+    var navData = await Vue.axios.get(apiPath.NAVIGATION_TREELIST);
+    var navList = navData.data.data;
+    this.filterTreeList(navList);
+    this.navs = navList;
+  },
   computed: {
     items() {
       return [
@@ -112,35 +118,31 @@ export default {
     },
     selected() {
       if (!this.active.length) return undefined;
-
       const id = this.active[0];
-
-      return this.users.find((user) => user.id === id);
+      return this.navs.find((user) => user.id === id);
     },
   },
-
   watch: {
     selected: "randomAvatar",
   },
-
   methods: {
     async fetchUsers(item) {
-       var routerList = await Vue.axios.get(
-         apiPath.NAVIGATION_LIST_BY_PARENT_ID,
-         { id: item.id }
-       );
-
-       item.children.push(...routerList.data.data);
-
-      //console.info(routerList.data.data);
-
-        // return fetch("https://jsonplaceholder.typicode.com/users")
-        //   .then((res) => res.json())
-        //   .then((json) =>{console.info(...json); item.children.push(...json)})
-        //   .catch((err) => console.warn(err));
+      this.$delete(item, "children");
+      item.children.push(item);
     },
+    //随机头像
     randomAvatar() {
       this.avatar = avatars[Math.floor(Math.random() * avatars.length)];
+    },
+    //处理导航列表
+    filterTreeList(item) {
+      item.forEach((element) => {
+        if (element.children.length <= 0) {
+          this.$delete(element, "children");
+        } else {
+          this.filterTreeList(element.children);
+        }
+      });
     },
   },
 };
