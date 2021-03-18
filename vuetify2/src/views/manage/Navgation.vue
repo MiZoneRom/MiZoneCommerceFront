@@ -30,6 +30,18 @@
           </div>
           <v-card v-else :key="selectedNav.id" class="mx-auto" flat>
             <v-form ref="form" v-model="valid" lazy-validation>
+              <v-select
+                v-model="selectedNav.parentId"
+                :items="sortNavs"
+                label="父级导航"
+                item-value="id"
+                item-text="name"
+              >
+                <template v-slot:append-item>
+                  <v-divider class="mb-2"></v-divider>
+                </template>
+              </v-select>
+
               <v-text-field
                 v-model="selectedNav.name"
                 :counter="10"
@@ -99,6 +111,7 @@ export default {
     active: [],
     open: [],
     navs: [],
+    sortNavs: [],
     selectedNav: null,
     edit: false,
     nameRules: [
@@ -150,6 +163,11 @@ export default {
     },
     async getNavData(id) {
       var navData = await this.axios.get(apiPath.NAVIGATION + "?id=" + id);
+      var sortNavs = await this.axios.get(apiPath.NAVIGATION_SORT_LIST, {
+        id: 0,
+      });
+      this.sortNavs = sortNavs.data.data;
+      this.sortNavs.unshift({ id: 0, name: "一级导航" });
       return navData.data.data;
     },
     submitNav() {
