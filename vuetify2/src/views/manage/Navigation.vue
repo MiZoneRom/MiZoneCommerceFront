@@ -177,6 +177,10 @@ export default {
       } else {
         result = this.axios.post(apiPath.NAVIGATION, this.selectedNav);
       }
+      this.$dialog.notify.info(result.data.msg, {
+        position: "top-right",
+        timeout: 5000,
+      });
     },
     createNewNav(id, event) {
       if (event) event.cancelBubble = true;
