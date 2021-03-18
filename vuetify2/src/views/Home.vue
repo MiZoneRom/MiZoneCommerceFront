@@ -78,16 +78,15 @@ import apiPath from "@/service/apiPath";
 export default {
   data() {
     return {
-      managerInfo: null,
+      managerInfo: { realName: "" },
       collapse: true,
       route: global.RouterList,
     };
   },
-  created() {
+  async created() {
     let vm = this;
-    vm.axios.get(apiPath.USER_INFO).then((response) => {
-      vm.managerInfo = response.data.managerModel;
-    });
+    var managerInfo = await vm.axios.get(apiPath.USER_INFO);
+    vm.managerInfo = managerInfo.data.managerModel;
   },
 };
 </script>

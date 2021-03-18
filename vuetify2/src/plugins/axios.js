@@ -63,13 +63,13 @@ _axios.interceptors.response.use(async (response) => {
 }, async (error) => {
   if (error.response) {
 
+    var vm = this;
     var status = error.response.status;
 
     if (status == 401) {
 
       //获取Token
       const token = getToken();
-      //const expires = parseInt(JSON.parse(sessionStorage.getItem('expires')));
       const refresh_token = getRefreshToken();
 
       //如果没有正在刷新
@@ -89,10 +89,8 @@ _axios.interceptors.response.use(async (response) => {
         //如果获取成功
         if (tokenResult.success) {
           isRefreshing = false;
-          setToken(JSON.stringify(tokenResult.data.token));
-          setRefreshToken(JSON.stringify(tokenResult.data.refreshToken));
-          //sessionStorage.setItem("expires", JSON.stringify(tokenResult.data.expires));
-          //sessionStorage.setItem("refreshExpires", JSON.stringify(tokenResult.data.refreshExpires));
+          setToken(tokenResult.data.token);
+          setRefreshToken(tokenResult.data.refreshToken);
           // 已经刷新了token，将所有队列中的请求进行重试
           requests.forEach(cb => cb(tokenResult.data.token));
           requests = [];
@@ -100,10 +98,10 @@ _axios.interceptors.response.use(async (response) => {
           error.config.headers.Authorization = 'Bearer ' + tokenResult.data.token;
           return _axios(error.config);
         } else {
-          this.$dialog.notify.info(tokenResult.msg, {
-            position: 'top-right',
-            timeout: 5000
-          });
+          // vm.dialog.notify.info(tokenResult.msg, {
+          //   position: 'top-right',
+          //   timeout: 5000
+          // });
           //跳转到登录
           router.replace({
             path: '/Login',
