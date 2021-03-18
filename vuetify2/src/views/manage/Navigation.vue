@@ -177,8 +177,8 @@ export default {
       } else {
         result = this.axios.post(apiPath.NAVIGATION, this.selectedNav);
       }
-      this.$dialog.notify.info(result.data.msg, {
-        position: "top-right",
+      this.$dialog.message.info(result.data.msg, {
+        position: "bottom-center",
         timeout: 5000,
       });
     },
