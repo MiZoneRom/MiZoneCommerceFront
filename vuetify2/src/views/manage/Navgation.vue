@@ -26,7 +26,7 @@
       <v-col class="d-flex text-center">
         <v-scroll-y-transition mode="out-in">
           <div
-            v-if="!selected"
+            v-if="!selectedNav"
             class="title grey--text text--lighten-1 font-weight-light"
             style="align-self: center"
           >
@@ -34,7 +34,7 @@
           </div>
           <v-card
             v-else
-            :key="selected.id"
+            :key="selectedNav.id"
             class="pt-6 mx-auto"
             flat
             max-width="400"
@@ -47,13 +47,13 @@
                 ></v-img>
               </v-avatar>
               <h3 class="headline mb-2">
-                {{ selected.name }}
+                {{ selectedNav.name }}
               </h3>
               <div class="blue--text mb-2">
-                {{ selected.name }}
+                {{ selectedNav.name }}
               </div>
               <div class="blue--text subheading font-weight-bold">
-                {{ selected.name }}
+                {{ selectedNav.name }}
               </div>
             </v-card-text>
             <v-divider></v-divider>
@@ -61,19 +61,19 @@
               <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
                 Company:
               </v-col>
-              <v-col>{{ selected.name }}</v-col>
+              <v-col>{{ selectedNav.name }}</v-col>
               <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
                 Website:
               </v-col>
               <v-col>
-                <a :href="`//${selected.name}`" target="_blank">{{
-                  selected.website
+                <a :href="`//${selectedNav.name}`" target="_blank">{{
+                  selectedNav.website
                 }}</a>
               </v-col>
               <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
                 Phone:
               </v-col>
-              <v-col>{{ selected.phone }}</v-col>
+              <v-col>{{ selectedNav.phone }}</v-col>
             </v-row>
           </v-card>
         </v-scroll-y-transition>
@@ -97,8 +97,8 @@ export default {
     active: [],
     avatar: null,
     open: [],
-    users: [],
     navs: [],
+    selectedNav: undefined,
   }),
   async created() {
     var navData = await Vue.axios.get(apiPath.NAVIGATION_TREELIST);
@@ -107,23 +107,22 @@ export default {
     this.navs = navList;
   },
   computed: {
-    items() {
-      return [
-        {
-          id: 0,
-          name: "系统导航",
-          children: this.users,
-        },
-      ];
-    },
     selected() {
       if (!this.active.length) return undefined;
       const id = this.active[0];
-      return this.navs.find((user) => user.id === id);
+      return this.navs.find((nav) => nav.id === id);
     },
   },
   watch: {
     selected: "randomAvatar",
+    active: {
+      deep: true,
+      async handler() {
+        var navData = await this.getNavData(this.active[0]);
+        console.info(navData);
+        this.selectedNav = navData;
+      },
+    },
   },
   methods: {
     async fetchUsers(item) {
@@ -132,7 +131,7 @@ export default {
     },
     //随机头像
     randomAvatar() {
-      this.avatar = avatars[Math.floor(Math.random() * avatars.length)];
+      console.info("aaa");
     },
     //处理导航列表
     filterTreeList(item) {
@@ -143,6 +142,10 @@ export default {
           this.filterTreeList(element.children);
         }
       });
+    },
+    async getNavData(id) {
+      var navData = await Vue.axios.get(apiPath.NAVIGATION + "?id=" + id);
+      return navData.data.data;
     },
   },
 };

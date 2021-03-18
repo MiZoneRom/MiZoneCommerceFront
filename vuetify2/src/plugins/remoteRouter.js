@@ -55,8 +55,8 @@ router.beforeEach(async (to, from, next) => {
 //初始化路由
 function initRouter(data, to, next) {
   siteRouter = filterAsyncRouter(data); //过滤路由
-  router.addRoutes(siteRouter); //动态添加路由
-  router.addRoutes([{ path: '*', redirect: '/404', hidden: true }]);//添加动态路由后再添加404页面
+  router.addRoute(...siteRouter); //动态添加路由
+  router.addRoute(...[{ path: '*', redirect: '/404', hidden: true }]);//添加动态路由后再添加404页面
   global.RouterList = siteRouter //将路由数据传递给全局变量，做侧边栏菜单渲染工作
   next({ ...to, replace: true });
 }
