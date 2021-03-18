@@ -82,7 +82,7 @@
               type="number"
             ></v-text-field>
 
-            <v-textarea label="简介" v-model="selectedNav.desc"></v-textarea>
+            <v-textarea label="简介" v-model="selectedNav.remark"></v-textarea>
 
             <v-btn
               :disabled="!valid"
