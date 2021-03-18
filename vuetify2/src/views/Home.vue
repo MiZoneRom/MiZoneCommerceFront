@@ -20,7 +20,9 @@
                   <v-list-item-title class="title">
                     {{ managerInfo.realName }}
                   </v-list-item-title>
-                  <v-list-item-subtitle>{{managerInfo.userName}}</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{
+                    managerInfo.userName
+                  }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -64,7 +66,9 @@
     </v-app-bar>
 
     <v-main>
-      <router-view></router-view>
+      <v-fade-transition mode="out-in">
+        <router-view></router-view>
+      </v-fade-transition>
     </v-main>
   </v-app>
 </template>

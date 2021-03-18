@@ -24,7 +24,7 @@
     <v-divider vertical></v-divider>
 
     <v-col class="d-flex text-center">
-      <v-scroll-y-transition mode="out-in">
+      <v-scroll-x-transition mode="out-in">
         <div
           v-if="!selectedNav"
           class="title grey--text text--lighten-1 font-weight-light"
@@ -94,7 +94,7 @@
             </v-btn>
           </v-form>
         </v-card>
-      </v-scroll-y-transition>
+      </v-scroll-x-transition>
     </v-col>
   </v-row>
 </template>
