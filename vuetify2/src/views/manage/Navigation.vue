@@ -31,7 +31,7 @@
         >
           选择一个导航
         </div>
-        <v-card v-else :key="selectedNav.id" class="mx-auto" flat>
+        <v-card v-else :key="selectedNav.id" class="mx-auto pa-5" flat>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-row>
               <v-col cols="6">
@@ -41,7 +41,7 @@
                   label="父级导航"
                   item-value="id"
                   item-text="name"
-                  prepend-icon="mdi-map"
+                  prepend-inner-icon="mdi-map"
                 >
                   <template v-slot:append-item>
                     <v-divider class="mb-2"></v-divider>
@@ -120,7 +120,8 @@
                 fab
                 @click="submitNav"
               >
-                <v-icon>mdi-plus</v-icon>
+                <v-icon v-if="selectedNav.id">mdi-plus</v-icon>
+                <v-icon v-if="!selectedNav.id">mdi-minus</v-icon>
               </v-btn>
             </v-fab-transition>
           </v-form>
