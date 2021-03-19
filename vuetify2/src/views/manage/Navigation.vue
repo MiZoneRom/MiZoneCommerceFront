@@ -33,47 +33,72 @@
         </div>
         <v-card v-else :key="selectedNav.id" class="mx-auto" flat>
           <v-form ref="form" v-model="valid" lazy-validation>
-            <v-select
-              v-model="selectedNav.parentId"
-              :items="sortNavs"
-              label="父级导航"
-              item-value="id"
-              item-text="name"
-            >
-              <template v-slot:append-item>
-                <v-divider class="mb-2"></v-divider>
-              </template>
-            </v-select>
+            <v-row>
+              <v-col cols="6">
+                <v-select
+                  v-model="selectedNav.parentId"
+                  :items="sortNavs"
+                  label="父级导航"
+                  item-value="id"
+                  item-text="name"
+                  prepend-icon="mdi-map"
+                >
+                  <template v-slot:append-item>
+                    <v-divider class="mb-2"></v-divider>
+                  </template>
+                </v-select>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="selectedNav.name"
+                  :counter="10"
+                  :rules="nameRules"
+                  label="名称"
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="selectedNav.subTitle"
+                  :rules="nameRules"
+                  label="副标题"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="selectedNav.icon"
+                  label="图标"
+                ></v-text-field
+              ></v-col>
+            </v-row>
 
-            <v-text-field
-              v-model="selectedNav.name"
-              :counter="10"
-              :rules="nameRules"
-              label="名称"
-              required
-            ></v-text-field>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="selectedNav.component"
+                  label="组件"
+                ></v-text-field
+              ></v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="selectedNav.path"
+                  label="地址"
+                ></v-text-field
+              ></v-col>
+            </v-row>
 
-            <v-text-field
-              v-model="selectedNav.subTitle"
-              :rules="nameRules"
-              label="副标题"
-              required
-            ></v-text-field>
+            <v-row>
+              <v-col cols="6"> </v-col>
+              <v-col cols="6"> </v-col>
+            </v-row>
 
-            <v-text-field
-              v-model="selectedNav.icon"
-              label="图标"
-            ></v-text-field>
-
-            <v-text-field
-              v-model="selectedNav.component"
-              label="组件"
-            ></v-text-field>
-
-            <v-text-field
-              v-model="selectedNav.path"
-              label="地址"
-            ></v-text-field>
+            <v-row>
+              <v-col cols="6"> </v-col>
+              <v-col cols="6"> </v-col>
+            </v-row>
 
             <v-text-field
               v-model="selectedNav.sortId"
