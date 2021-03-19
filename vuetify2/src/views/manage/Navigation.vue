@@ -111,7 +111,7 @@
             <v-fab-transition>
               <v-btn
                 v-show="valid"
-                :disabled="!valid"
+                :disabled="!valid || loading"
                 color="pink"
                 dark
                 absolute
@@ -120,8 +120,8 @@
                 fab
                 @click="submitNav"
               >
-                <v-icon v-if="selectedNav.id">mdi-plus</v-icon>
-                <v-icon v-if="!selectedNav.id">mdi-minus</v-icon>
+                <v-icon v-if="!selectedNav.id">mdi-plus</v-icon>
+                <v-icon v-if="selectedNav.id">mdi-content-save</v-icon>
               </v-btn>
             </v-fab-transition>
           </v-form>
@@ -142,6 +142,7 @@ export default {
     sortNavs: [],
     selectedNav: null,
     edit: false,
+    loading: false,
     nameRules: [
       (v) => !!v || "Name is required",
       (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
@@ -168,7 +169,10 @@ export default {
     active: {
       deep: true,
       async handler() {
-        if (this.active.length <= 0) return;
+        if (this.active.length <= 0) {
+          this.selectedNav = null;
+          return;
+        }
         var navData = await this.getNavData(this.active[0]);
         this.selectedNav = navData;
       },
@@ -201,6 +205,7 @@ export default {
     async submitNav() {
       this.$refs.form.validate();
       var result = null;
+      this.loading = true;
       if (this.selectedNav.id) {
         result = await this.axios.put(
           apiPath.NAVIGATION + this.selectedNav.id,
@@ -209,6 +214,7 @@ export default {
       } else {
         result = this.axios.post(apiPath.NAVIGATION, this.selectedNav);
       }
+      this.loading = false;
       this.$dialog.message.info(result.data.msg, {
         position: "bottom-center",
         timeout: 5000,
