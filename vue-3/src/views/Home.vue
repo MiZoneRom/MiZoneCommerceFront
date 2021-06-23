@@ -38,12 +38,18 @@
 import Navigation from "@/components/Navigation.vue";
 //菜单栏
 import MenuBar from "@/components/MenuBar.vue";
+import apiPath from "@/service/apiPath";
 
 export default {
   name: "Home",
   components: {
     Navigation,
     MenuBar,
+  },
+  async created() {
+    let vm = this;
+    var managerInfo = await vm.axios.get(apiPath.USER_INFO);
+    vm.managerInfo = managerInfo.data.managerModel;
   },
 };
 </script>
