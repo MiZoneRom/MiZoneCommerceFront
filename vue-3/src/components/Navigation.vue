@@ -1,46 +1,58 @@
 <template>
   <el-menu
-    default-active="2"
+    :default-active="$route.path"
     class="navgation"
     @open="handleOpen"
     @close="handleClose"
     background-color="#f9f9f9"
+    :router="true"
   >
-    <el-submenu index="1">
+    <el-menu-item index="/">
+      <i class="el-icon-s-home"></i>
+      <template #title>首页</template>
+    </el-menu-item>
+
+    <el-submenu
+      v-for="item in menuData"
+      v-bind:key="item.path"
+      :index="item.path"
+    >
       <template #title>
-        <i class="el-icon-location"></i>
-        <span>导航一</span>
+        <i :class="item.icon"></i>
+        <span>{{ item.name }}</span>
       </template>
-      <el-menu-item-group>
-        <template #title>分组一</template>
-        <el-menu-item index="1-1">选项1</el-menu-item>
-        <el-menu-item index="1-2">选项2</el-menu-item>
-      </el-menu-item-group>
-      <el-menu-item-group title="分组2">
-        <el-menu-item index="1-3">选项3</el-menu-item>
-      </el-menu-item-group>
-      <el-submenu index="1-4">
-        <template #title>选项4</template>
-        <el-menu-item index="1-4-1">选项1</el-menu-item>
-      </el-submenu>
+      <el-menu-item
+        v-for="sub in item.children"
+        v-bind:key="sub.path"
+        :index="item.path + '/' + sub.path"
+      >
+        <!-- <template #title>{{ sub.meta.title }}</template> -->
+      </el-menu-item>
     </el-submenu>
-    <el-menu-item index="2">
-      <i class="el-icon-menu"></i>
-      <template #title>导航二</template>
-    </el-menu-item>
-    <el-menu-item index="3" disabled>
-      <i class="el-icon-document"></i>
-      <template #title>导航三</template>
-    </el-menu-item>
-    <el-menu-item index="4">
-      <i class="el-icon-setting"></i>
-      <template #title>导航四</template>
-    </el-menu-item>
   </el-menu>
 </template>
 
 <style lang="less" scoped>
 .navgation {
   height: 100%;
+}
+</style>
+
+<script>
+import { router } from "@/router";
+export default {
+  data() {
+    return {
+      menuData: [],
+    };
+  },
+  created() {
+    this.menuData = this.$router.getRoutes();
+  },
+};
+</script>
+<style>
+.el-menu {
+  border-right: none;
 }
 </style>
