@@ -28,28 +28,26 @@ const manager = {
     actions: {
         // 登录获取token
         Login({ commit }, vm) {
-            vm.logining = true;
+            var formData = vm.form;
+            formData.logining = true;
             vm.axios
                 .get(
-                    api.LOGIN + "?username=" + vm.name + "&password=" + vm.password
+                    api.LOGIN + "?username=" + formData.userName + "&password=" + formData.password
                 )
                 .then((response) => {
                     var responseData = response.data;
                     if (responseData.success == false) {
-                        vm.$dialog.notify.info(responseData.msg, {
-                            position: "top-right",
-                            timeout: 5000,
-                        });
-                        vm.logining = false;
+                        vm.$message({ message: responseData.msg, type: 'error' });
+                        formData.logining = false;
                         return;
                     }
-                    commit('SET_ADMIN', vm.name);
+                    commit('SET_ADMIN', formData.userName);
                     commit('SET_TOKEN', responseData.data.token);
                     commit('SET_REFRESH_TOKEN', responseData.data.refreshToken);
-
-                    vm.$router.push('/');
+                    //vm.$router.push('/');
                 });
         },
+        //登出
         LoginOut({ commit }, vm) {
             commit('LOGOUT');
         }

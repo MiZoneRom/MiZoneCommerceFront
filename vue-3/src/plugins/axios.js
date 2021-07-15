@@ -27,8 +27,6 @@ let config = {
   // withCredentials: true, // Check cross-site Access-Control
 };
 
-console.info(config);
-
 // 配置通用请求动画
 let isRefreshing = false;
 // 重试队列，每一项将是一个待执行的函数形式
@@ -65,7 +63,7 @@ _axios.interceptors.response.use(async (response) => {
 }, async (error) => {
   if (error.response) {
 
-    //var vm = this;
+    var vm = this;
     var status = error.response.status;
 
     if (status == 401) {
@@ -100,10 +98,7 @@ _axios.interceptors.response.use(async (response) => {
           error.config.headers.Authorization = 'Bearer ' + tokenResult.data.token;
           return _axios(error.config);
         } else {
-          // vm.dialog.notify.info(tokenResult.msg, {
-          //   position: 'top-right',
-          //   timeout: 5000
-          // });
+          vm.$message({ message: tokenResult.msg });
           //跳转到登录
           router.replace({
             path: '/Login',
@@ -156,10 +151,4 @@ Plugin.install = function (Vue) {
   });
 };
 
-//createApp.use(Plugin)
-
-//export default Plugin;
-
-export default (app) => {
-  app.use(Plugin)
-}
+export default Plugin;
