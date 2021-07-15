@@ -42,8 +42,6 @@ function filterAsyncRouter(asyncRouterMap) {
 
 export default (app, router) => {
 
-  console.info(router);
-
   router.beforeEach(async (to, from, next) => {
 
     var vm = this;

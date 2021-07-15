@@ -44,7 +44,7 @@ const manager = {
                     commit('SET_ADMIN', formData.userName);
                     commit('SET_TOKEN', responseData.data.token);
                     commit('SET_REFRESH_TOKEN', responseData.data.refreshToken);
-                    //vm.$router.push('/');
+                    vm.$router.push('/');
                 });
         },
         //登出
