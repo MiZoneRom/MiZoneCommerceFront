@@ -49,6 +49,7 @@ _axios.interceptors.request.use(
 
 // Add a response interceptor
 _axios.interceptors.response.use(async (response) => {
+
   //请求状态
   //var status = response.status;
   //如果登录失效
@@ -64,6 +65,7 @@ _axios.interceptors.response.use(async (response) => {
   if (error.response) {
 
     var vm = this;
+
     var status = error.response.status;
 
     if (status == 401) {
@@ -98,7 +100,7 @@ _axios.interceptors.response.use(async (response) => {
           error.config.headers.Authorization = 'Bearer ' + tokenResult.data.token;
           return _axios(error.config);
         } else {
-          vm.$message({ message: tokenResult.msg });
+          //vm.$message({ message: tokenResult.msg });
           //跳转到登录
           router.replace({
             path: '/Login',
@@ -130,11 +132,9 @@ _axios.interceptors.response.use(async (response) => {
     console.error('抱歉，请求处理异常');
   }
   return Promise.reject(error);
-}
-);
+});
 
-//Plugin.install = function (Vue, options) {
-Plugin.install = function (Vue) {
+Plugin.install = function (Vue, options) {
   Vue.axios = _axios;
   window.axios = _axios;
   Object.defineProperties(Vue.config.globalProperties, {

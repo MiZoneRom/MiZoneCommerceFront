@@ -48,7 +48,7 @@ const manager = {
                 });
         },
         //登出
-        LoginOut({ commit }, vm) {
+        LoginOut({ commit }) {
             commit('LOGOUT');
         }
     }

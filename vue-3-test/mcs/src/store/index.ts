@@ -1,6 +1,4 @@
 import { createStore } from 'vuex'
-import manager from './modules/manager'
-import system from './modules/system'
 
 export default createStore({
   state: {
@@ -10,7 +8,5 @@ export default createStore({
   actions: {
   },
   modules: {
-    manager,
-    system
   }
 })

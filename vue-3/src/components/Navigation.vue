@@ -7,13 +7,9 @@
     background-color="#f9f9f9"
     :router="true"
   >
-    <el-menu-item index="/">
-      <i class="el-icon-s-home"></i>
-      <template #title>首页</template>
-    </el-menu-item>
 
     <el-submenu
-      v-for="item in menuData"
+      v-for="item in navigationList"
       v-bind:key="item.path"
       :index="item.path"
     >
@@ -26,7 +22,7 @@
         v-bind:key="sub.path"
         :index="item.path + '/' + sub.path"
       >
-        <!-- <template #title>{{ sub.meta.title }}</template> -->
+        <template #title>{{ sub.name }}</template>
       </el-menu-item>
     </el-submenu>
   </el-menu>
@@ -39,15 +35,14 @@
 </style>
 
 <script>
-import { router } from "@/router";
 export default {
   data() {
     return {
-      menuData: [],
+      navigationList: [],
     };
   },
   created() {
-    this.menuData = this.$router.getRoutes();
+    this.navigationList = global.RouterList;
   },
 };
 </script>

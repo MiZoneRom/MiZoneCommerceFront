@@ -44,11 +44,9 @@ export default (app, router) => {
 
   router.beforeEach(async (to, from, next) => {
 
-    var vm = this;
-
     //如果前往登录 清空登录信息
     if (to.path == '/Login') {
-      store.dispatch("LoginOut", vm);
+      store.dispatch("LoginOut");
     }
 
     //获取系统配置

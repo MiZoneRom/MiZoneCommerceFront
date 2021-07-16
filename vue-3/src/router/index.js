@@ -1,8 +1,6 @@
-//import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
-//createApp.use(VueRouter)
-
+//默认路由
 const routes = [
   {
     path: '/',
@@ -34,5 +32,9 @@ const router = createRouter({
   routes
 });
 
+router.beforeEach(async (to, from, next) => {
+  console.info(this);
+  next();
+});
 
 export default router
