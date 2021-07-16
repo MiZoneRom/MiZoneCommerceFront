@@ -30,7 +30,7 @@ export class Interceptors {
             (config: AxiosRequestConfig) => {
                 const token = getToken();
                 if (token) {
-                    config.headers.Authorization = token;
+                    config.headers.Authorization = `Bearer ${token}`;
                 }
                 return config;
             },
@@ -103,10 +103,10 @@ export class Interceptors {
 
                             // 将resolve放进队列，用一个函数形式来保存，等token刷新后直接执行
                             requests.push((token: any) => {
-                                error.config.headers.Authorization = 'Bearer ' + token;
+                                error.config.headers.Authorization = `Bearer ${token}`;
                                 resolve(this.instance(error.config));
                             });
-                            
+
                         });
                     }
 
@@ -124,9 +124,9 @@ export class Interceptors {
 
 
 //刷新token
-export function getRefreshTokenAsync(param: any) {
+export function getRefreshTokenAsync(param: any): Promise<any> {
     return axios.post(process.env.VUE_APP_SERVICE_URL + apiPath.REFRESH_TOKEN, param)
         .then((res) => {
             return Promise.resolve(res.data)
-        })
+        });
 }
