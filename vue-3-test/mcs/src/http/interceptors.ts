@@ -116,7 +116,7 @@ export class Interceptors {
             }
         );
     }
-    // 返回一下
+    //返回实例
     getInterceptors(): AxiosInstance {
         return this.instance;
     }
