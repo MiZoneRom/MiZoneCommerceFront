@@ -34,6 +34,12 @@ const routes: Array<RouteRecordRaw> = [
   }
 ]
 
+//创建路由
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
+  routes
+});
+
 //初始化路由
 function initRouter(data: any, to: RouteLocationNormalized, next: NavigationGuardNext) {
   siteRouter = filterAsyncRouter(data); //过滤路由
@@ -61,12 +67,6 @@ function filterAsyncRouter(asyncRouterMap: Array<RouteRecordRaw>): Array<RouteRe
   });
   return accessedRouters;
 }
-
-//创建路由
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
-});
 
 //路由开始之前
 router.beforeEach(async (to, from, next) => {
