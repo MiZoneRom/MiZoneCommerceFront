@@ -11,6 +11,7 @@ import {
 
 // 是否在刷新
 let isRefreshing = false;
+
 // 重试队列，每一项将是一个待执行的函数形式
 let requests: Array<any> = [];
 
@@ -18,7 +19,7 @@ export class Interceptors {
     instance: AxiosInstance;
     constructor() {
         this.instance = axios.create({
-            baseURL: "/api",
+            baseURL: process.env.VUE_APP_SERVICE_URL,
             timeout: 10 * 1000,
         });
     }
@@ -110,6 +111,14 @@ export class Interceptors {
                         });
                     }
 
+                } else if (status == 403) {
+                    router.replace({
+                        path: '/Login',
+                        query: {
+                            redirect: router.currentRoute.value.fullPath//登录之后跳转到对应页面
+                        }
+                    });
+                    return;
                 }
 
                 return Promise.resolve(error);
