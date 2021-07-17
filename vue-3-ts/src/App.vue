@@ -11,24 +11,18 @@ body {
 }
 </style>
 
-<script>
+<script lang="ts">
 import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
   props: {
     success: { type: String },
-    callback: {
-
-    }
+    callback: {},
   },
-  components: {
-  },
+  components: {},
   data() {
-    return {
-    };
+    return {};
   },
-  computed: {
-
-  },
+  computed: {},
 });
 </script>
